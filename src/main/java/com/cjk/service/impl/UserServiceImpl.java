@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService{
 		Set<Role> roleSet = new HashSet<>();
 		Role role = new Role();
 		role.setRoleId(1L);
-		role.setRoleName("ROLE_ADMIN");
+		role.setRoleName("ADMIN");
 		roleSet.add(role);
 		
 		user.setUserId(1L);

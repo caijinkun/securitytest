@@ -13,6 +13,8 @@ import com.cjk.domain.Role;
 import com.cjk.domain.User;
 
 public class SecurityUser extends User implements UserDetails{
+	private static final long serialVersionUID = 1L;
+
 	public SecurityUser(){}
 	public SecurityUser(User user){
 		BeanUtils.copyProperties(user, this);

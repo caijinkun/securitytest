@@ -6,6 +6,21 @@
 <title>登录</title>
 </head>
 <body>
-
+	<form action="/login" method="post">
+		<table>
+			<tr>
+				<th>用户名</th>
+				<td><input name="username"/></td>
+			</tr>
+			<tr>
+				<th>密码</th>
+				<td><input name="password"/></td>
+			</tr>
+		</table>
+		<br/>
+		<input type="checkbox" name="remember-me" value="true"/>Remember me 
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		<input type="submit" value="登录"/>
+	</form>
 </body>
 </html>

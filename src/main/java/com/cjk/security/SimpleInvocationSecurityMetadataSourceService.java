@@ -16,7 +16,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SimpleInvocationSecurityMetadataSourceService implements FilterInvocationSecurityMetadataSource{
 	private static Map<String, Collection<ConfigAttribute>> resourceMap = new HashMap<>();  
 
@@ -26,24 +28,23 @@ public class SimpleInvocationSecurityMetadataSourceService implements FilterInvo
     	String role1 = "ADMIN";
     	String role2 = "SUPER";
     	
-    	String permission1 = "";
-    	String permission2 = "";
-    	String permission3 = "";
-    	ConfigAttribute attr1 = new SecurityConfig(permission1);
-    	ConfigAttribute attr2 = new SecurityConfig(permission2);
-    	ConfigAttribute attr3 = new SecurityConfig(permission3);
+    	String permission1 = "/test1";
+    	String permission2 = "/test2";
+    	String permission3 = "/test3";
+    	
+    	ConfigAttribute attr1 = new SecurityConfig(role1);
+    	ConfigAttribute attr2 = new SecurityConfig(role2);
     	
     	Set<ConfigAttribute> configAttributeSet1 = new HashSet<>();
     	configAttributeSet1.add(attr1);
     	configAttributeSet1.add(attr2);
     	
     	Set<ConfigAttribute> configAttributeSet2 = new HashSet<>();
-    	configAttributeSet2.add(attr1);
     	configAttributeSet2.add(attr2);
-    	configAttributeSet2.add(attr3);
     	
-    	resourceMap.put(role1, configAttributeSet1);
-    	resourceMap.put(role2, configAttributeSet2);
+    	resourceMap.put(permission1, configAttributeSet1);
+    	resourceMap.put(permission2, configAttributeSet1);
+    	resourceMap.put(permission3, configAttributeSet2);
     } 
     
 	@Override
@@ -68,6 +69,6 @@ public class SimpleInvocationSecurityMetadataSourceService implements FilterInvo
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return true;
+		return FilterInvocation.class.isAssignableFrom(clazz);
 	}
 }
