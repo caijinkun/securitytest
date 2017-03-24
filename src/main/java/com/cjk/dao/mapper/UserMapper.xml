@@ -29,4 +29,20 @@
 		left join t_role_info C
 		on C.role_id = B.role_id
 	</select>
+	
+	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
+		select A.user_id, A.username, A.password,C.role_id, C.role_name from 
+		(
+			select * from t_user_info
+		) as A
+		left join t_user_role_link B
+		on A.user_id = B.user_id
+		left join t_role_info C
+		on C.role_id = B.role_id
+		limit #{offset}, #{limit}
+	</select>
+	
+	<select id="getAllCount" resultType="int">
+		select count(1) from t_user_info
+	</select>
 </mapper>

@@ -1,0 +1,31 @@
+package com.cjk.param.common;
+
+public class PageParam {
+	private Integer offset;
+	private Integer limit;
+	private String order;
+	
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+	public String getOrder() {
+		return order;
+	}
+
+	public void setOrder(String order) {
+		this.order = order;
+	}
+}

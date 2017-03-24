@@ -1,0 +1,146 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta content="text/html;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<link rel="stylesheet" type="text/css" th:href="@{static/component/bootstrap/css/bootstrap.css}" />
+<link rel="stylesheet" type="text/css" thhref="@{static/component/select2/css/select2.min.css" />
+ 
+<title>用户管理</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="toolbar">
+					<button id="addModalBut" type="button" class="btn btn-success">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+					</button>
+					<button id="alterModalBut" type="button" class="btn btn-info">
+						<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>修改
+					</button>
+					<button id="alterPassModalBut" type="button"
+						class="btn btn-danger">
+						<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>修改密码
+					</button>
+					<button id="deleteBut" type="button" class="btn btn-danger">
+						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>删除
+					</button>
+				</div>
+				<table id="userTab"></table>
+			</div>
+		</div>
+	</div>
+	
+	<div id="addModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">新增</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<div class="form-group">
+							<label for="addUserName">用户名</label> 
+							<input type="text" class="form-control" id="addUserName" name="username"/>
+						</div>
+						<div class="form-group">
+							<label for="addPassword">初始密码</label> 
+							<input type="text" class="form-control" id="addPassword" name="password" value="123456"/>
+						</div>
+						<div class="form-group">
+							<label for="addRole">角色</label> 
+							<input type="text" id="addRole" style="width:100%;"/>
+						</div>
+						<div class="form-group">
+							<label for="addIsLocked">是否锁定</label> 
+							<input type="text" id="addIsLocked" style="width:100%;"/>
+						</div>
+						<div id="addHidden" class="hidden">
+							<input id="addRoleHidden" name="roleIds" type="hidden"/>
+							<input id="addIsLockedHidden" name="locked" type="hidden"/>
+							<input name="salt" type="hidden"/>
+							<input name="organizationId" type="hidden" value="1"/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-success" data-custom-commit="1">确定</button>
+					<button class="btn btn-danger" data-custom-cancel="1">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="alterModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">修改</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<div class="form-group">
+							<label for="alterUserName">用户名</label> 
+							<input type="text" class="form-control" id="alterUserName" name="username"/>
+						</div>
+						<div class="form-group">
+							<label for="alterRole">角色</label> 
+							<input type="text" id="alterRole" style="width:100%;"/>
+						</div>
+						<div class="form-group">
+							<label for="alterIsLocked">是否锁定</label> 
+							<input type="text" id="alterIsLocked" style="width:100%;"/>
+						</div>
+						<div id="alterHidden" class="hidden">
+							<input id="alterIdHidden" name="id" type="hidden"/>
+							<input id="alterRoleHidden" name="roleIds" type="hidden"/>
+							<input id="alterIsLockedHidden" name="locked" type="hidden"/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-success" data-custom-commit="1">确定</button>
+					<button class="btn btn-danger" data-custom-cancel="1">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="alterPassModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">修改密码</h4>
+				</div>
+				<div class="modal-body">
+					<form role="form">
+						<div class="form-group">
+							<label for="password">新密码</label> 
+							<input type="text" class="form-control" id="password" name="password"/>
+						</div>
+						<div class="form-group">
+							<label for="passAgain">确认密码</label> 
+							<input type="text" class="form-control" id="passAgain" />
+						</div>
+						<div class="hidden">
+							<input name="id" type="hidden"/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-success" data-custom-commit="1">确定</button>
+					<button class="btn btn-danger" data-custom-cancel="1">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{static/component/common/jquery-1.12.4.js}"></script>
+	<script type="text/javascript" th:src="@{static/component/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{static/component/bootstrap-table/bootstrap-table.js}"></script>
+	<script type="text/javascript" th:src="@{static/component/select2/js/select2.js}"></script>
+	<script type="text/javascript" th:src="@{static/component/common/bootbox.min.js}"></script>
+	
+	<script type="text/javascript" th:src="@{static/component/admin/userManage.js}"></script>
+</body>
+</html>
