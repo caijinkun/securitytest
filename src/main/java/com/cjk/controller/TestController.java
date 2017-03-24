@@ -15,7 +15,7 @@ public class TestController {
 	
 	@RequestMapping("/hello")
 	public @ResponseBody Object hello(){
-		return userMapper.getById(1);
+		return userMapper.getByUsername("admin");
 	}
 	
 	@RequestMapping("/hello2")

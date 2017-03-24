@@ -1,0 +1,56 @@
+/** 导航 */
+/* 圆角不好看 */
+#nav{
+	border-radius: 0;
+}
+/* 令下拉菜单背景和导航条风格一致 */
+#nav ul.dropdown-menu{
+	background: #080808;
+}
+/*同上*/
+#nav ul.dropdown-menu a:hover{
+	background: #222222;
+}
+/*同上*/
+#nav ul.dropdown-menu a{
+	color:#FFF;
+}
+/* 原值-15,不知为什么这么做 */
+#nav .navbar-right {
+	margin-right: 0px;
+}
+
+div.header{
+	border-bottom:5px solid #222;
+}
+div.header>div{
+	width:120px;
+	height:40px;
+	background:#222;
+	border-top:2px solid;
+	border-top-left-radius:8px;
+	border-top-right-radius:8px;
+	text-align:center;color:#FFF;
+	font-size:20px;
+}
+div.header>div span{
+	padding-top:10px;
+	display:inline-block;
+}
+
+/** 覆盖easyui*/
+/* easyui datetimebox时分选择框中文字不可见color:inherit时不可见 */
+div.datebox-calendar-inner+div input.textbox-text{
+	color:#000000;
+}
+/*easyui datagrid 原值为width: 10000px，造成列表右侧总是多出一列 */
+/* div.datagrid-header-inner{
+	width:100%;
+} */
+/* 同上 */
+/* div.datagrid-header-inner table.datagrid-htable{
+	width:100%;
+} */
+/* div.datagrid-body table.datagrid-btable{
+	width:100%;
+} */

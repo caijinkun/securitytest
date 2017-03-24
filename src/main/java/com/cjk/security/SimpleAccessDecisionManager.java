@@ -3,6 +3,7 @@ package com.cjk.security;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class SimpleAccessDecisionManager implements AccessDecisionManager{
 	@Override
@@ -20,20 +22,17 @@ public class SimpleAccessDecisionManager implements AccessDecisionManager{
 		if (configAttributes == null) {
 			return;
 		}
-
-		Iterator<ConfigAttribute> ite = configAttributes.iterator();
-
-		while (ite.hasNext()) {
-			ConfigAttribute ca = ite.next();
-			String needRole = ((SecurityConfig) ca).getAttribute();
-			// ga 为用户所被赋予的权限。 needRole 为访问相应的资源应该具有的权限。
-			for (GrantedAuthority ga : authentication.getAuthorities()) {
-				if (needRole.trim().equals(ga.getAuthority().trim())) {
+		
+		for(ConfigAttribute attr:configAttributes){
+			String needRole = StringUtils.trim(attr.getAttribute());
+			for(GrantedAuthority grantedAuth : authentication.getAuthorities()){
+				String userRole = StringUtils.trim(grantedAuth.getAuthority());
+				if(StringUtils.equals(needRole, userRole)){
 					return;
 				}
 			}
 		}
-		throw new AccessDeniedException("权限不足");
+		throw new AccessDeniedException("无访问权限");
 	}
 
 	@Override

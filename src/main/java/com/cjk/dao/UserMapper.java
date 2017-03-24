@@ -6,5 +6,6 @@ import com.cjk.domain.User;
 
 @Mapper
 public interface UserMapper {
-	User getById(Integer userId);
+//	User getById(Integer userId);
+	User getByUsername(String username);
 }

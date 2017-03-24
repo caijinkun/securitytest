@@ -1,5 +1,8 @@
 package com.cjk.service;
 
-public interface ResourceService {
+import java.util.List;
+import java.util.Map;
 
+public interface ResourceService {
+	List<Map<String, String>> getPerm2RoleList();
 }

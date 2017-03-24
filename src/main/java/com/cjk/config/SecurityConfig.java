@@ -1,7 +1,9 @@
 package com.cjk.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,16 +11,36 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
-import com.cjk.security.SimpleSecurityFilter;
+import com.cjk.security.SimpleAccessDecisionManager;
+import com.cjk.security.SimpleFilterInvocationSecurityMetadataSource;
+import com.cjk.security.SimpleSecurityInterceptor;
 import com.cjk.security.SimpleUserDetailsService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
-	private SimpleSecurityFilter simpleSecurityFilter;
+	private AuthenticationManager authenticationManager;
 	
-	@Autowired
-	private SimpleUserDetailsService simpleUserDetailsService;
+	@Bean
+	public SimpleUserDetailsService simpleUserDetailsService(){
+		return new SimpleUserDetailsService();
+	}
+	
+	@Bean
+	public SimpleFilterInvocationSecurityMetadataSource simpleFilterInvocationSecurityMetadataSource(){
+		return new SimpleFilterInvocationSecurityMetadataSource();
+	}
+	
+	@Bean
+	public SimpleAccessDecisionManager simpleAccessDecisionManager(){
+		return new SimpleAccessDecisionManager();
+	}
+	
+	@Bean
+	public SimpleSecurityInterceptor simpleSecurityInterceptor(){
+		return new SimpleSecurityInterceptor(simpleAccessDecisionManager(), authenticationManager,
+				simpleFilterInvocationSecurityMetadataSource());
+	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -26,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		successHandler.setDefaultTargetUrl("/index");
 		
 		http
-//			.addFilterBefore(simpleSecurityFilter, FilterSecurityInterceptor.class)
+			.addFilterBefore(simpleSecurityInterceptor(), FilterSecurityInterceptor.class)
 			.authorizeRequests()  
-        	.antMatchers("/static/**", "/index", "/login").permitAll()
+        	.antMatchers("/static/**", "/login", "/test/hello").permitAll()
         	.anyRequest().authenticated()                
 	        .and()
 	        	.formLogin()  
@@ -45,6 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(simpleUserDetailsService);
+		auth.userDetailsService(simpleUserDetailsService());
 	}
 }

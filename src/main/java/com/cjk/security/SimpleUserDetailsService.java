@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.cjk.domain.User;
 import com.cjk.service.UserService;
-@Component
+
 public class SimpleUserDetailsService implements UserDetailsService{
 	@Autowired
 	private UserService userService;
