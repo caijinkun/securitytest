@@ -1,7 +1,11 @@
 package com.cjk.param.common;
 
+import javax.validation.constraints.NotNull;
+
 public class PageParam {
+	@NotNull(message="offset不能为空")
 	private Integer offset;
+	@NotNull(message="limit不能为空")
 	private Integer limit;
 	private String order;
 	

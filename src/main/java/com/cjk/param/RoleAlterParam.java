@@ -1,12 +1,12 @@
-package com.cjk.domain;
+package com.cjk.param;
 
-import java.util.List;
+import java.util.Set;
 
-public class Role {
+public class RoleAlterParam {
 	private Long roleId;
 	private String roleName;
 	private String description;
-	private List<Resource> resourceList;
+	private Set<Long> resources;
 	
 	public Long getRoleId() {
 		return roleId;
@@ -26,10 +26,10 @@ public class Role {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Resource> getResourceList() {
-		return resourceList;
+	public Set<Long> getResources() {
+		return resources;
 	}
-	public void setResourceList(List<Resource> resourceList) {
-		this.resourceList = resourceList;
+	public void setResources(Set<Long> resources) {
+		this.resources = resources;
 	}
 }

@@ -2,5 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cjk.dao.RoleMapper">
-
+	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
+		
+	</select>
+	
+	<insert id="create" parameterType="com.cjk.param.RoleAddParam" useGeneratedKeys="true" keyProperty="roleId">
+		insert into t_role_info (role_name, description) values(#{roleName}, #{description})
+	</insert>
+	
+	<update id="update" parameterType="com.cjk.param.RoleAlterParam" >
+		update t_role_info
+		<set>
+	      <if test="roleName != null" >
+	        role_name = #{roleName}
+	      </if>
+	      <if test="description != null" >
+	        description = #{description}
+	      </if>
+	    </set>
+	    where role_id = #{roleId}
+	</update>
+	
+	<select id="getAllCount" resultType="int">
+		select count(1) from t_role_info
+	</select>
 </mapper>

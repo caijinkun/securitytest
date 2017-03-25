@@ -16,7 +16,12 @@ public class SimpleUserDetailsService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userService.getUserByUsername(username);
+		User user;
+		try {
+			user = userService.getUserByUsername(username);
+		} catch (Exception e) {
+			throw new UsernameNotFoundException("该用户不存在");
+		}
 		if(null == user){
 			throw new UsernameNotFoundException("该用户不存在");
 		}

@@ -1,17 +1,13 @@
-package com.cjk.domain;
+package com.cjk.param;
 
-import java.io.Serializable;
 import java.util.Set;
 
-public class User implements Serializable{
-	private static final long serialVersionUID = 1L;
-
+public class UserAddParam {
 	private Long userId;
 	private String username;
 	private String password;
-	private Integer status;
 	private Integer locked;
-	private Set<Role> roleSet;
+	private Set<Long> roleIds;
 	
 	public Long getUserId() {
 		return userId;
@@ -31,23 +27,16 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public Integer getLocked() {
 		return locked;
 	}
 	public void setLocked(Integer locked) {
 		this.locked = locked;
 	}
-	public Set<Role> getRoleSet() {
-		return roleSet;
+	public Set<Long> getRoleIds() {
+		return roleIds;
 	}
-	public void setRoleSet(Set<Role> roleSet) {
-		this.roleSet = roleSet;
+	public void setRoleIds(Set<Long> roleIds) {
+		this.roleIds = roleIds;
 	}
-	
 }

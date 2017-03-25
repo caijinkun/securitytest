@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjk.dao.RoleResourceLinkMapper">
+	<insert id="create" parameterType="com.cjk.domain.RoleResourceLink">
+		insert into t_role_resource_link(role_id, resource_id) values(#{roleId}, #{resourceId})
+	</insert>
+	
+	<delete id="deleteByRoleId" parameterType="long" >
+		delete from t_role_resource_link where role_id = #{userId}
+	</delete>
+</mapper>

@@ -6,17 +6,13 @@
 		<id column="user_id" property="userId" />
 		<result column="username" property="username" />
 		<result column="password" property="password" />
+		<result column="status" property="status" />
+		<result column="locked" property="locked" />
 		<collection property="roleSet" ofType="com.cjk.domain.Role" column="user_id">  
             <id column="role_id" property="roleId"/>  
             <result column="role_name" property="roleName"/>  
         </collection>
 	</resultMap> 
-
-<!-- 	<select id="getById" resultType="com.cjk.domain.User">
-		select user_id as userId, username as username, password as password
-		from t_user_info
-		where user_id = #{userId}
-	</select> -->
 	
 	<select id="getByUsername" resultMap="userResultMap">
 		select A.user_id, A.username, A.password,C.role_id, C.role_name from 
@@ -31,9 +27,10 @@
 	</select>
 	
 	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
-		select A.user_id, A.username, A.password,C.role_id, C.role_name from 
+		select A.user_id, A.username, A.password, A.status, A.locked,C.role_id, C.role_name from 
 		(
 			select * from t_user_info
+			where status != 9
 		) as A
 		left join t_user_role_link B
 		on A.user_id = B.user_id
@@ -45,4 +42,37 @@
 	<select id="getAllCount" resultType="int">
 		select count(1) from t_user_info
 	</select>
+	
+	<update id="update" parameterType="com.cjk.param.UserAlterParam" >
+		update t_user_info
+		<set>
+	      <if test="username != null" >
+	        username = #{username}
+	      </if>
+	      <if test="locked != null" >
+	        locked = #{locked}
+	      </if>
+	    </set>
+	    where user_id = #{userId}
+	</update>
+	
+	<update id="updatePassword" parameterType="map">
+		update t_user_info
+		<set>
+	        password = #{password}
+	    </set>
+	    where user_id = #{userId}
+	</update>
+	
+	<update id="deleteLogic" parameterType="int">
+		update t_user_info
+		<set>
+	        status = 9
+	    </set>
+	    where user_id = #{userId}
+	</update>
+	
+	<insert id="create" parameterType="com.cjk.param.UserAddParam" useGeneratedKeys="true" keyProperty="userId">
+		insert into t_user_info (username, password, locked) values(#{username}, #{password}, #{locked})
+	</insert>
 </mapper>
