@@ -11,6 +11,7 @@
 		<collection property="roleSet" ofType="com.cjk.domain.Role" column="user_id">  
             <id column="role_id" property="roleId"/>  
             <result column="role_name" property="roleName"/>  
+            <result column="description" property="description"/>  
         </collection>
 	</resultMap> 
 	
@@ -27,7 +28,7 @@
 	</select>
 	
 	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
-		select A.user_id, A.username, A.password, A.status, A.locked,C.role_id, C.role_name from 
+		select A.user_id, A.username, A.password, A.status, A.locked,C.role_id, C.role_name, C.description from 
 		(
 			select * from t_user_info
 			where status != 9
@@ -47,7 +48,7 @@
 		update t_user_info
 		<set>
 	      <if test="username != null" >
-	        username = #{username}
+	        username = #{username},
 	      </if>
 	      <if test="locked != null" >
 	        locked = #{locked}

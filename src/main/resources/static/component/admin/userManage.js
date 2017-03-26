@@ -5,8 +5,60 @@ $(function(){
 	initToolbar($('#toolbar'));
 });
 
+function getRoleList(){
+	var roleList = [];
+	$.ajax({
+		url:'/admin/role/getAll',
+		async: true
+	}).success(function(backdata){
+		data = backdata && backdata.data;
+		$.each(data, function(index, elem){
+			roleList[index] = {};
+			roleList[index].id = elem.roleId;
+			roleList[index].text = elem.description;
+		});
+	});
+	getRoleList = function(){
+		return roleList;
+	}
+	return roleList;
+}
+
 function initSel(){
+	var lockData = [ {
+		"id" : "0",
+		"text" : "是"
+	}, {
+		"id" : "1",
+		"text" : "否"
+	} ];
+	var roleList = getRoleList();
+	var $addHidden = $('#addHidden');
+	var $alterHidden = $('#alterHidden');
 	
+	$('#alterIsLocked, #addIsLocked').select2({
+		data:lockData
+	}).on('click', function(){
+		var $this = $(this);
+		var id = $this.prop('id');
+		var data = $this.select2('data');
+		var value = data.id;
+		$('#'+id+"Hidden").val(value);
+	});
+	
+	$('#addRole, #alterRole').select2({
+		data:roleList,
+		multiple: true
+	}).on('click', function(){
+		var $this = $(this);
+		var id = $this.prop('id');
+		var data = $this.select2('data');
+		var value = [];
+		$.each(data, function(index, item){
+			value.push(item.id);
+		});
+		$('#'+id+"Hidden").val(value.sort().join(','));
+	});
 }
 
 function initModel(){
@@ -14,14 +66,36 @@ function initModel(){
 	var $alterModal = $('#alterModal');
 	var $alterPassModal = $('#alterPassModal');
 	
+	$addModal.modal({
+		backdrop:false, 
+		show:false
+	}).on('click', 'button[data-custom-commit]', function(){
+		var data = getFormData($('form', $addModal));
+		$.post('/admin/user/create', data);
+	});
+	
 	$alterModal.modal({
 		backdrop:false, 
 		show:false
+	}).on('click', 'button[data-custom-commit]', function(){
+		var data = getFormData($('form', $alterModal));
+		$.post('/admin/user/update', data);
 	});
 	
 	$alterPassModal.modal({
 		backdrop:false, 
 		show:false
+	}).on('click', 'button[data-custom-commit]', function(){
+		var data = getFormData($('form', $alterPassModal));
+		if(data.password.length < 6){
+			bootbox.alert('密码不能小于6位');
+			return;
+		}
+		if(data.password != $('#passAgain').val()){
+			bootbox.alert('两次输入密码不一致');
+			return;
+		}
+		$.post('/admin/user/updatePassword', data);
 	});
 	
 
@@ -35,7 +109,6 @@ function initModel(){
 }
 
 function initList($tabList){
-	var roleData = getRoleMap();
 	var cols = [
 	        {
 	        	checkbox:true
@@ -45,19 +118,39 @@ function initList($tabList){
 					return index + 1;
 				}
 			},{
-				title : 'id',
-				field : 'id',
+				title : 'userId',
+				field : 'userId',
 				visible : false
 			},{
 				field : 'username',
 				title : '用户名'
 			},{
-				field : 'roleIds',
+				field : 'roleSet',
+				title : '角色ID',
+				formatter : function(value, row, index){
+					var ids = []; 
+					$.each(value, function(index, item){
+						ids.push(item.roleId);
+					});
+					return ids; 
+				}
+			},{
+				field : 'roleSet',
 				title : '角色',
 				formatter : function(value, row, index){
 					var text = []; 
 					$.each(value, function(index, item){
-						text.push(roleData[item]);
+						text.push(item.roleName);
+					});
+					return text.join(','); 
+				}
+			},{
+				field : 'roleSet',
+				title : '角色描述',
+				formatter : function(value, row, index){
+					var text = []; 
+					$.each(value, function(index, item){
+						text.push(item.description);
 					});
 					return text.join(','); 
 				}
@@ -73,8 +166,8 @@ function initList($tabList){
 	$tabList.bootstrapTable({
 	    method: 'get', 
 	    singleSelect:true,
-	    height: 400,
-	    url:'/user/getAll',
+	    height: 700,
+	    url:'/admin/user/getAll',
 	    uniqueId: 'id',
 	    toolbar: '#toolbar',              
 	    striped: true,
@@ -85,8 +178,8 @@ function initList($tabList){
 	    pageList: [15, 25, 50, 100],      
 	    columns: cols,
 	    responseHandler:function(backdata){
-	    	if(backdata){
-    			return backdata;
+	    	if(backdata||backdata.data){
+    			return backdata.data;
 	    	}
 	    }
 	});
@@ -104,28 +197,69 @@ function initToolbar(){
 	
 	var $deleteBut = $('#deleteBut');
 	
+	var $userTab = $('#userTab');
+	
 	$addModalBut.on('click', function(){
 		$addModal.modal('show');
 	});
+	
 	$alterModalBut.on('click', function(){
+		var selArr = $userTab.bootstrapTable('getSelections');
+		if(!selArr || selArr.length == 0){
+			bootbox.alert('请选择修改项');
+			return;
+		}
+		var sel = selArr[0];
+		var selRoleSet = sel.roleSet;
+		var roleIds = $.map(selRoleSet, function(a){
+			return a.roleId;
+		});
+		
+		$('#alterUserName').val(sel.username);
+		$('#alterIdHidden').val(sel.userId);
+		$('#alterRoleHidden').val(roleIds.sort().join(','));
+		$('#alterIsLockedHidden').val(sel.locked);
+		$('#alterRole').select2('val', roleIds);
+		$('#alterIsLocked').select2('val', sel.locked);
+		
 		$alterModal.modal('show');
 	});
+	
 	$alterPassModalBut.on('click', function(){
+		var selArr = $userTab.bootstrapTable('getSelections');
+		if(!selArr || selArr.length == 0){
+			bootbox.alert('请选择修改项');
+			return;
+		}
+		var sel = selArr[0];
+		$('#alterPassIdHidden').val(sel.userId);
 		$alterPassModal.modal('show');
 	});
-}
-
-function getRoleList(){
-	return $('#userTab').data('customRoleList');
-}
-
-function getRoleMap(){
-	var roleList = getRoleList();
-	var roleMap = {};
-	$.each(roleList, function(index, item){
-		roleMap[item.id] = item.text;
+	
+	$deleteBut.on('click', function(){
+		var selArr = $userTab.bootstrapTable('getSelections');
+		if(!selArr || selArr.length == 0){
+			bootbox.alert('请选择修改项');
+			return;
+		}
+		var sel = selArr[0];
+	    bootbox.confirm({
+	        message: "确定删除吗?",
+	        buttons: {
+	            confirm: {
+	                label: '确定',
+	                className: 'btn-success'
+	            },
+	            cancel: {
+	                label: '取消',
+	                className: 'btn-danger'
+	            }
+	        },
+	        callback: function (result) {
+	        	$.post('/admin/user/delete', {"userId":sel.userId});
+	        }
+	    });
 	});
-	return roleMap;
 }
 
 function clean($container){

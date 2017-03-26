@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/resource")
-public class resourceController {
+public class ResourceController {
 
 }

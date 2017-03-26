@@ -36,16 +36,16 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/updatePassword", method=RequestMethod.POST)
-	public JsonResult updatePassword(long alterId, String password) throws Throwable{
-		Param param = new Param().append("userId", alterId)
+	public JsonResult updatePassword(long userId, String password) throws Throwable{
+		Param param = new Param().append("userId", userId)
 						.append("password", password);
 		userService.updatePassword(param);
 		return JsonResult.success();
 	}
 	
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public JsonResult delete(Long id) throws Throwable{
-		userService.deleteLogic(id);
+	public JsonResult delete(Long userId) throws Throwable{
+		userService.deleteLogic(userId);
 		return JsonResult.success();
 	}
 	

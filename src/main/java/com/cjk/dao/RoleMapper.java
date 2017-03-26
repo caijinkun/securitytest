@@ -11,7 +11,7 @@ import com.cjk.param.common.PageParam;
 
 @Mapper
 public interface RoleMapper {
-	List<Role> getAll(PageParam pageParam);
+	List<Role> getAllByPage(PageParam pageParam);
 	int getAllCount();
 	long create(RoleAddParam param);
 	int update(RoleAlterParam param);

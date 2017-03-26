@@ -2,8 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cjk.dao.RoleMapper">
-	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
-		
+	<resultMap id="roleResultMap" type="com.cjk.domain.Role">
+		<id column="role_id" property="roleId" />
+		<result column="role_name" property="roleName" />
+		<result column="description" property="description" />
+		<collection property="resourceList" ofType="com.cjk.domain.Resource" column="role_id">  
+            <id column="resource_id" property="resourceId"/>  
+            <result column="resource_name" property="resourceName"/>  
+            <result column="type" property="type"/>  
+            <result column="url" property="url"/>  
+            <result column="parent_id" property="parentId"/>  
+            <result column="permision" property="permision"/>  
+        </collection>
+	</resultMap> 
+
+	<select id="getAllByPage" parameterType="com.cjk.param.common.PageParam" resultMap="roleResultMap">
+		select A.role_id, A.role_name, A.description, C.resource_id, C.resource_name, C.`type`, C.url, C.parent_id, C.permision 
+		from t_role_info A
+		left join t_role_resource_link B
+		on A.role_id = B.role_id
+		left join t_resource_info C
+		on C.resource_id = B.resource_id
+		<if test="offset != null and limit != null" >
+			limit #{offset}, #{limit}
+		</if>
 	</select>
 	
 	<insert id="create" parameterType="com.cjk.param.RoleAddParam" useGeneratedKeys="true" keyProperty="roleId">
