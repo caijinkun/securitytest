@@ -8,13 +8,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.cjk.security.SimpleAccessDecisionManager;
 import com.cjk.security.SimpleFilterInvocationSecurityMetadataSource;
 import com.cjk.security.SimpleSecurityInterceptor;
 import com.cjk.security.SimpleUserDetailsService;
+import com.cjk.security.TestAuthenticationProvider;
+import com.cjk.security.sso.SSOAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -41,18 +43,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		return new SimpleSecurityInterceptor(simpleAccessDecisionManager(), authenticationManager,
 				simpleFilterInvocationSecurityMetadataSource());
 	}
+	@Bean
+	public SSOAuthenticationFilter SSOAuthenticationFilter(){
+		return new SSOAuthenticationFilter();
+	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
 		successHandler.setDefaultTargetUrl("/index");
 		
+//		http
+//			.addFilterBefore(SSOAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//			.addFilterBefore(simpleSecurityInterceptor(), FilterSecurityInterceptor.class)
+		
 		http
-			.addFilterBefore(simpleSecurityInterceptor(), FilterSecurityInterceptor.class)
 			.authorizeRequests()  
-        	.antMatchers("/static/**", "/login", "/test/hello").permitAll()
-        	.anyRequest().permitAll()
-        	//.authenticated()                
+        	.antMatchers("/static/**", "/login").permitAll()
+        	.anyRequest().authenticated()                
 	        .and()
 	        	.csrf().disable()
 	        	.formLogin()  
@@ -69,6 +77,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(testAuthenticationProvider());
 		auth.userDetailsService(simpleUserDetailsService());
+	}
+	
+	@Bean
+	public TestAuthenticationProvider testAuthenticationProvider(){
+		return new TestAuthenticationProvider();
 	}
 }

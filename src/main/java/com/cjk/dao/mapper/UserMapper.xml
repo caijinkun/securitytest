@@ -6,8 +6,10 @@
 		<id column="user_id" property="userId" />
 		<result column="username" property="username" />
 		<result column="password" property="password" />
-		<result column="status" property="status" />
+		<result column="salt" property="salt" />
 		<result column="locked" property="locked" />
+		<result column="expire_at" property="expireAt" />
+		<result column="status" property="status" />
 		<collection property="roleSet" ofType="com.cjk.domain.Role" column="user_id">  
             <id column="role_id" property="roleId"/>  
             <result column="role_name" property="roleName"/>  
@@ -16,7 +18,7 @@
 	</resultMap> 
 	
 	<select id="getByUsername" resultMap="userResultMap">
-		select A.user_id, A.username, A.password,C.role_id, C.role_name from 
+		select A.user_id, A.username, A.password, A.salt, A.locked, A.expire_at, A.status, C.role_id, C.role_name, C.description from 
 		(
 			select * from t_user_info
 			where username = #{username}
@@ -28,7 +30,7 @@
 	</select>
 	
 	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
-		select A.user_id, A.username, A.password, A.status, A.locked,C.role_id, C.role_name, C.description from 
+		select A.user_id, A.username, A.password, A.salt, A.locked, A.expire_at, A.status, C.role_id, C.role_name, C.description from 
 		(
 			select * from t_user_info
 			where status != 9

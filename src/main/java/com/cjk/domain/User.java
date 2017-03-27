@@ -9,9 +9,11 @@ public class User implements Serializable{
 	private Long userId;
 	private String username;
 	private String password;
-	private Integer status;
+	private String salt;
+	private Long expireAt;
 	private Integer locked;
 	private Set<Role> roleSet;
+	private Integer status;
 	
 	public Long getUserId() {
 		return userId;
@@ -49,5 +51,19 @@ public class User implements Serializable{
 	public void setRoleSet(Set<Role> roleSet) {
 		this.roleSet = roleSet;
 	}
-	
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+	public Long getExpireAt() {
+		return expireAt;
+	}
+	public void setExpireAt(Long expireAt) {
+		this.expireAt = expireAt;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }

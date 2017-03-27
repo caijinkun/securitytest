@@ -1,6 +1,7 @@
 package com.cjk.security;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.cjk.constant.Constant;
 import com.cjk.domain.Role;
 import com.cjk.domain.User;
 
@@ -33,12 +35,13 @@ public class SecurityUser extends User implements UserDetails{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		long now = new Date().getTime();
+		return this.getExpireAt() == Constant.USER_NEVER_EXPIRE || this.getExpireAt() >= now;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return this.getLocked() == Constant.USER_NON_LOCKED;
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class SecurityUser extends User implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.getStatus() != Constant.USER_DISABLED;
 	}
 
 }
