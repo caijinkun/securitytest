@@ -54,7 +54,6 @@ public class SimpleFilterInvocationSecurityMetadataSource implements FilterInvoc
     	for(Map.Entry<String,Collection<ConfigAttribute>> item : resourceTemp.entrySet()){
     		resourceMap.put(new AntPathRequestMatcher(item.getKey()), item.getValue());
     	}
-    	System.out.println(resourceMap);
     }
 	@Override
 	public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {

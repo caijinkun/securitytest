@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,8 @@ public class UserServiceImpl implements UserService{
 	private UserMapper userMapper;
 	@Autowired
 	private UserRoleLinkMapper userRoleLinkMapper;
-	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Override
 	public User getUserByUsername(String username) throws Exception {
 		return userMapper.getByUsername(username);
@@ -59,11 +61,14 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updatePassword(Map<String, Object> param)  throws Exception{
+		String password = (String)param.get("password");
+		param.put("password", bCryptPasswordEncoder.encode(password));
 		userMapper.updatePassword(param);
 	}
 
 	@Override
 	public void create(UserAddParam param) {
+		param.setPassword(bCryptPasswordEncoder.encode(param.getPassword()));
 		userMapper.create(param);
 		long createId = param.getUserId();
 		Set<Long> roleIds = param.getRoleIds();

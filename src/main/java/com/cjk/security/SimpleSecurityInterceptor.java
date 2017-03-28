@@ -25,7 +25,6 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
-@Component
 public class SimpleSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 	private FilterInvocationSecurityMetadataSource invocationSecurityMetadataSource;
 	
