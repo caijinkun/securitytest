@@ -22,13 +22,16 @@ import org.springframework.util.CollectionUtils;
 import com.cjk.service.ResourceService;
 
 public class SimpleFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource{
-	@Autowired
 	private ResourceService resourceService;
 	
 	private static Map<RequestMatcher, Collection<ConfigAttribute>> resourceMap = new HashMap<>();
 	
-	@PostConstruct
-    public void init(){
+	public SimpleFilterInvocationSecurityMetadataSource(ResourceService resourceService){
+		this.resourceService = resourceService;
+		init();
+	}
+	
+	public void init(){
     	List<Map<String, String>> perm2RoleList = resourceService.getPerm2RoleList();
     	Map<String, Collection<ConfigAttribute>> resourceTemp = new HashMap<>();
     	

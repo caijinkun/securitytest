@@ -8,7 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cjk.dao.ResourceMapper;
-import com.cjk.dto.ResourceNode;
+import com.cjk.domain.Resource;
+import com.cjk.dto.ResourceNodeDTO;
+import com.cjk.dto.common.PageDTO;
+import com.cjk.param.ResourceAddParam;
+import com.cjk.param.ResourceAlterParam;
+import com.cjk.param.common.PageParam;
 import com.cjk.service.ResourceService;
 
 @Service
@@ -22,26 +27,26 @@ public class ResourceServiceImpl implements ResourceService{
 	}
 	
 	@Override
-	public List<ResourceNode> getResourceTree(){
-		List<ResourceNode> nodes = resourceMapper.getAllResource();
+	public List<ResourceNodeDTO> getResourceTree(){
+		List<ResourceNodeDTO> nodes = resourceMapper.getAllResource();
 		return getCascadeTree(nodes);
 	}
 	
-	protected List<ResourceNode> getCascadeTree(List<ResourceNode> notes){
-		List<ResourceNode> topNotes = new ArrayList<>();		//顶级节点
-		for(ResourceNode note1: notes){
+	protected List<ResourceNodeDTO> getCascadeTree(List<ResourceNodeDTO> notes){
+		List<ResourceNodeDTO> topNotes = new ArrayList<>();		//顶级节点
+		for(ResourceNodeDTO note1: notes){
 			long parentId = note1.getParentId();
 			boolean hasFound = false;	                    //是否找到父节点
 			
-			for(ResourceNode note2: notes){
+			for(ResourceNodeDTO note2: notes){
 				if(note1 == note2){continue;}
-				long noteId = note2.getId();
+				long noteId = note2.getResourceId();
 				if(noteId == parentId){
 					hasFound = true;
-					List<ResourceNode> childNoteList = note2.getChildren();
+					List<ResourceNodeDTO> childNoteList = note2.getNodes();
 					if(null == childNoteList){	            //该节点为对应父节点找到的第一个节点，需先初始化
-						childNoteList = new ArrayList<ResourceNode>();
-						note2.setChildren(childNoteList);
+						childNoteList = new ArrayList<ResourceNodeDTO>();
+						note2.setNodes(childNoteList);
 					}
 					childNoteList.add(note1);
 					break;	                                //每个节点只可能有一个父节点
@@ -53,5 +58,25 @@ public class ResourceServiceImpl implements ResourceService{
 			}
 		}
 		return topNotes;
+	}
+
+	@Override
+	public void create(ResourceAddParam param) throws Exception {
+		resourceMapper.create(param);
+	}
+
+	@Override
+	public PageDTO<Resource> getAll(PageParam pageParam) throws Exception {
+		PageDTO<Resource> dto = new PageDTO<>();
+		List<Resource> ResourceList = resourceMapper.getAll(pageParam);
+		int total = resourceMapper.getAllCount();
+		dto.setRows(ResourceList);
+		dto.setTotal(total);
+		return dto;
+	}
+
+	@Override
+	public void update(ResourceAlterParam param) throws Exception {
+		resourceMapper.update(param);
 	}
 }

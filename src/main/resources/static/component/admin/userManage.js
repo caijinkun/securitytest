@@ -11,7 +11,7 @@ function getRoleList(){
 		url:'/admin/role/getAll',
 		async: true
 	}).success(function(backdata){
-		data = backdata && backdata.data;
+		var data = backdata && backdata.data;
 		$.each(data, function(index, elem){
 			roleList[index] = {};
 			roleList[index].id = elem.roleId;

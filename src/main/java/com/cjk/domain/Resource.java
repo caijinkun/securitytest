@@ -4,6 +4,7 @@ public class Resource {
 	private Long resourceId;
 	private String resourceName;
 	private Integer type;
+	private Integer resourceOrder;
 	private String url;
 	private Long parentId;
 	private String parentIds;
@@ -56,5 +57,11 @@ public class Resource {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	public Integer getResourceOrder() {
+		return resourceOrder;
+	}
+	public void setResourceOrder(Integer resourceOrder) {
+		this.resourceOrder = resourceOrder;
 	}
 }

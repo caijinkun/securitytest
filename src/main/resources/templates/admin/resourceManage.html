@@ -4,15 +4,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<link rel="stylesheet" type="text/css" th:href="@{static/component/bootstrap/css/bootstrap.css}" />
-<link rel="stylesheet" type="text/css" thhref="@{static/component/select2/css/select2.min.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap/css/bootstrap.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap-table/bootstrap-table.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/component/select2/css/select2.min.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap-treeview/bootstrap-treeview.min.css}" />
  
-<title>用户管理</title>
+<title>资源管理</title>
 </head>
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
+				<div id="tree"></div> 
+			</div>
+			<div class="col-md-8">
 				<div id="toolbar">
 					<button id="addModalBut" type="button" class="btn btn-success">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
@@ -20,15 +25,11 @@
 					<button id="alterModalBut" type="button" class="btn btn-info">
 						<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>修改
 					</button>
-					<button id="alterPassModalBut" type="button"
-						class="btn btn-danger">
-						<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>修改密码
-					</button>
 					<button id="deleteBut" type="button" class="btn btn-danger">
 						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>删除
 					</button>
 				</div>
-				<table id="userTab"></table>
+				<table id="resourceTab"></table>
 			</div>
 		</div>
 	</div>
@@ -42,26 +43,32 @@
 				<div class="modal-body">
 					<form role="form">
 						<div class="form-group">
-							<label for="addUserName">用户名</label> 
-							<input type="text" class="form-control" id="addUserName" name="username"/>
+							<label for="addResourceName">资源描述</label> 
+							<input type="text" class="form-control" id="addResourceName" name="resourceName"/>
 						</div>
 						<div class="form-group">
-							<label for="addPassword">初始密码</label> 
-							<input type="text" class="form-control" id="addPassword" name="password" value="123456"/>
+							<label for="addUrl">URL</label> 
+							<input type="text" class="form-control" id="addUrl" name="url"/>
 						</div>
 						<div class="form-group">
-							<label for="addRole">角色</label> 
-							<input type="text" id="addRole" style="width:100%;"/>
+							<label for="addResourceOrder">排序</label> 
+							<input type="text" id="addResourceOrder" class="form-control" value="10000"/>
 						</div>
 						<div class="form-group">
-							<label for="addIsLocked">是否锁定</label> 
-							<input type="text" id="addIsLocked" style="width:100%;"/>
+							<label for="addType">资源类型</label> 
+							<input type="text" id="addType" style="width:100%;"/>
+						</div>
+						<div class="form-group">
+							<label for="addPermision">权限表达式</label> 
+							<input type="text" id="addPermision" class="form-control" name="permision"/>
+						</div>
+						<div class="form-group">
+							<label for="addRemark">备注</label> 
+							<input type="text" id="addRemark" class="form-control" name="remark"/>
 						</div>
 						<div id="addHidden" class="hidden">
-							<input id="addRoleHidden" name="roleIds" type="hidden"/>
-							<input id="addIsLockedHidden" name="locked" type="hidden"/>
-							<input name="salt" type="hidden"/>
-							<input name="organizationId" type="hidden" value="1"/>
+							<input id="addParentIdHidden" name="parentId" type="hidden"/>
+							<input id="addTypeHidden" name="type" type="hidden"/>
 						</div>
 					</form>
 				</div>
@@ -72,6 +79,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div id="alterModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -81,49 +89,32 @@
 				<div class="modal-body">
 					<form role="form">
 						<div class="form-group">
-							<label for="alterUserName">用户名</label> 
-							<input type="text" class="form-control" id="alterUserName" name="username"/>
+							<label for="alterResourceName">资源描述</label> 
+							<input type="text" class="form-control" id="alterResourceName" name="resourceName"/>
 						</div>
 						<div class="form-group">
-							<label for="alterRole">角色</label> 
-							<input type="text" id="alterRole" style="width:100%;"/>
+							<label for="alterUrl">URL</label> 
+							<input type="text" class="form-control" id="alterUrl" name="url"/>
 						</div>
 						<div class="form-group">
-							<label for="alterIsLocked">是否锁定</label> 
-							<input type="text" id="alterIsLocked" style="width:100%;"/>
+							<label for="alterResourceOrder">排序</label> 
+							<input type="text" class="form-control" id="alterResourceOrder" name="resourceOrder" value="10000"/>
+						</div>
+						<div class="form-group">
+							<label for="alterType">资源类型</label> 
+							<input type="text" id="alterType" style="width:100%;"/>
+						</div>
+						<div class="form-group">
+							<label for="alterPermision">权限表达式</label> 
+							<input type="text" class="form-control" id="alterPermision" name="permision"/>
+						</div>
+						<div class="form-group">
+							<label for="alterRemark">备注</label> 
+							<input type="text" class="form-control" id="alterRemark" name="remark"/>
 						</div>
 						<div id="alterHidden" class="hidden">
-							<input id="alterIdHidden" name="id" type="hidden"/>
-							<input id="alterRoleHidden" name="roleIds" type="hidden"/>
-							<input id="alterIsLockedHidden" name="locked" type="hidden"/>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-success" data-custom-commit="1">确定</button>
-					<button class="btn btn-danger" data-custom-cancel="1">取消</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="alterPassModal" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">修改密码</h4>
-				</div>
-				<div class="modal-body">
-					<form role="form">
-						<div class="form-group">
-							<label for="password">新密码</label> 
-							<input type="text" class="form-control" id="password" name="password"/>
-						</div>
-						<div class="form-group">
-							<label for="passAgain">确认密码</label> 
-							<input type="text" class="form-control" id="passAgain" />
-						</div>
-						<div class="hidden">
-							<input name="id" type="hidden"/>
+							<input id="alterIdHidden" name="resourceId" type="hidden"/>
+							<input id="alterTypeHidden" name="type" type="hidden"/>
 						</div>
 					</form>
 				</div>
@@ -135,12 +126,14 @@
 		</div>
 	</div>
 	
-	<script type="text/javascript" th:src="@{static/component/common/jquery-1.12.4.js}"></script>
-	<script type="text/javascript" th:src="@{static/component/bootstrap/js/bootstrap.min.js}"></script>
-	<script type="text/javascript" th:src="@{static/component/bootstrap-table/bootstrap-table.js}"></script>
-	<script type="text/javascript" th:src="@{static/component/select2/js/select2.js}"></script>
-	<script type="text/javascript" th:src="@{static/component/common/bootbox.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/common/jquery-1.12.4.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap-table/bootstrap-table.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap-treeview/bootstrap-treeview.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/select2/js/select2.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/common/bootbox.min.js}"></script>
 	
-	<script type="text/javascript" th:src="@{static/component/admin/userManage.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/admin/resourceManage.js}"></script>
 </body>
 </html>
