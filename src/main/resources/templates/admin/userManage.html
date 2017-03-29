@@ -1,16 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta content="text/html;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap/css/bootstrap.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap-table/bootstrap-table.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/static/component/select2/css/select2.min.css}" />
- 
-<title>用户管理</title>
-</head>
+<head th:include="fragments/component::commonHead('用户管理')"></head>
 <body>
+	<div th:include="fragments/layout::nav"></div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">

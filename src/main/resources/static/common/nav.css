@@ -1,0 +1,9 @@
+#nav{
+	border-radius: 0;
+}
+#nav ul.dropdown-menu a{
+	color:#FFF;
+}
+#nav .navbar-right {
+	margin-right: 0px;
+}

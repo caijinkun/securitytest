@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="commonHead(title)">
+	<meta content="text/html;charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title th:text="${title}"></title>
+	<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap/css/bootstrap.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap-table/bootstrap-table.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/static/component/select2/css/select2.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/static/component/bootstrap-treeview/bootstrap-treeview.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/static/common/nav.css}" />
+</div>
+<div th:fragment="commonJS">
+
+</div>
+</html>

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cjk.dao.ResourceMapper;
 import com.cjk.domain.Resource;
@@ -17,6 +18,7 @@ import com.cjk.param.common.PageParam;
 import com.cjk.service.ResourceService;
 
 @Service
+@Transactional
 public class ResourceServiceImpl implements ResourceService{
 	@Autowired
 	private ResourceMapper resourceMapper;
