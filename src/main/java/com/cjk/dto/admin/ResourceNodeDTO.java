@@ -1,4 +1,4 @@
-package com.cjk.dto;
+package com.cjk.dto.admin;
 
 import java.util.List;
 

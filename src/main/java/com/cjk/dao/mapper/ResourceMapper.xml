@@ -13,15 +13,16 @@
 		on C.role_id = B.role_id
 	</select>
 	
-	<select id="getAllResource" resultType="com.cjk.dto.ResourceNodeDTO">
+	<select id="getAllNodeDTO" resultType="com.cjk.dto.admin.ResourceNodeDTO">
 		select resource_id as resourceId, resource_name as text, parent_id as parentId,
 			url as url, permision as permision
 		from t_resource_info
 	</select>
 	
-	<select id="getAll" resultType="com.cjk.domain.Resource" parameterType="com.cjk.param.ResourceQueryParam">
+	<select id="getAll" resultType="com.cjk.dto.admin.ResourceDTO" parameterType="map">
 		select resource_id as resourceId, resource_name as resourceName, type as type, url as url, 
-		resource_order as resourceOrder, parent_id as parentId, parent_ids as parent_ids, permision as permision, remark as remark 
+		resource_order as resourceOrder, parent_id as parentId, parent_ids as parent_ids, 
+		permision as permision, remark as remark 
 		from t_resource_info
 		<where>
 			<if test="pId != null">
@@ -29,11 +30,17 @@
 			</if>
 		</where>
 		order by resource_order
-		limit #{offset}, #{limit}
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
 	</select>
-	
-	<select id="getAllCount" resultType="int">
+	<select id="getAllCount" resultType="int" parameterType="map">
 		select count(1) from t_resource_info
+		<where>
+			<if test="pId != null">
+				(resource_id = #{pId} or parent_id = #{pId}) 
+			</if>
+		</where>
 	</select>
 	
 	<update id="update" parameterType="com.cjk.param.ResourceAlterParam" >

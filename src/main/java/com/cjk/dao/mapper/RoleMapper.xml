@@ -16,7 +16,7 @@
         </collection>
 	</resultMap> 
 
-	<select id="getAllByPage" parameterType="com.cjk.param.common.PageParam" resultMap="roleResultMap">
+	<select id="getAll" parameterType="map" resultMap="roleResultMap">
 		select A.role_id, A.role_name, A.description, C.resource_id, C.resource_name, C.`type`, C.url, C.parent_id, C.permision 
 		from t_role_info A
 		left join t_role_resource_link B
@@ -28,6 +28,14 @@
 		</if>
 	</select>
 	
+	<select id="getAllCount" resultType="int" parameterType="map">
+		select count(1) from t_role_info
+	</select>
+	
+	<select id="getRoleEnum" resultType="map">
+		select role_id as roleId, description as description from t_role_info
+	</select>
+	
 	<insert id="create" parameterType="com.cjk.param.RoleAddParam" useGeneratedKeys="true" keyProperty="roleId">
 		insert into t_role_info (role_name, description) values(#{roleName}, #{description})
 	</insert>
@@ -36,7 +44,7 @@
 		update t_role_info
 		<set>
 	      <if test="roleName != null" >
-	        role_name = #{roleName}
+	        role_name = #{roleName},
 	      </if>
 	      <if test="description != null" >
 	        description = #{description}
@@ -44,8 +52,4 @@
 	    </set>
 	    where role_id = #{roleId}
 	</update>
-	
-	<select id="getAllCount" resultType="int">
-		select count(1) from t_role_info
-	</select>
 </mapper>

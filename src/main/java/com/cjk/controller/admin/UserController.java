@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cjk.domain.User;
+import com.cjk.dto.admin.UserDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.entity.JsonResult;
 import com.cjk.entity.Param;
@@ -16,6 +16,7 @@ import com.cjk.param.UserAddParam;
 import com.cjk.param.UserAlterParam;
 import com.cjk.param.common.PageParam;
 import com.cjk.service.UserService;
+import com.cjk.utils.BeanUtils;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -25,7 +26,7 @@ public class UserController {
 	
 	@RequestMapping(value="/getAll", method=RequestMethod.GET)
 	public JsonResult getAll(@Valid PageParam pageParam, BindingResult br) throws Throwable{
-		PageDTO<User> dto = userService.getAll(pageParam);
+		PageDTO<UserDTO> dto = userService.getAll(BeanUtils.bean2Map(pageParam));
 		return JsonResult.success().setData(dto);
 	}
 	

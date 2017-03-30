@@ -8,7 +8,7 @@ $(function(){
 function getRoleList(){
 	var roleList = [];
 	$.ajax({
-		url:'/admin/role/getAll',
+		url:'/admin/role/getRoleEnum',
 		async: true
 	}).success(function(backdata){
 		var data = backdata && backdata.data;
@@ -22,6 +22,10 @@ function getRoleList(){
 		return roleList;
 	}
 	return roleList;
+}
+
+function reloadData(){
+	$('#userTab').bootstrapTable('refresh');
 }
 
 function initSel(){
@@ -71,7 +75,11 @@ function initModel(){
 		show:false
 	}).on('click', 'button[data-custom-commit]', function(){
 		var data = getFormData($('form', $addModal));
-		$.post('/admin/user/create', data);
+		$.post('/admin/user/create', data)
+			.success(function(){
+				initModel.modal('hide');
+				reloadData();
+			});
 	});
 	
 	$alterModal.modal({
@@ -79,7 +87,11 @@ function initModel(){
 		show:false
 	}).on('click', 'button[data-custom-commit]', function(){
 		var data = getFormData($('form', $alterModal));
-		$.post('/admin/user/update', data);
+		$.post('/admin/user/update', data)
+			.success(function(){
+				$alterModal.modal('hide');
+				reloadData();
+			});
 	});
 	
 	$alterPassModal.modal({
@@ -256,7 +268,9 @@ function initToolbar(){
 	            }
 	        },
 	        callback: function (result) {
-	        	$.post('/admin/user/delete', {"userId":sel.userId});
+	        	if(result){
+	        		$.post('/admin/user/delete', {"userId":sel.userId});
+	        	}
 	        }
 	    });
 	});

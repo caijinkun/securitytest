@@ -10,11 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cjk.dao.ResourceMapper;
 import com.cjk.domain.Resource;
-import com.cjk.dto.ResourceNodeDTO;
+import com.cjk.dto.admin.ResourceNodeDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.param.ResourceAddParam;
 import com.cjk.param.ResourceAlterParam;
-import com.cjk.param.common.PageParam;
 import com.cjk.service.ResourceService;
 
 @Service
@@ -30,7 +29,7 @@ public class ResourceServiceImpl implements ResourceService{
 	
 	@Override
 	public List<ResourceNodeDTO> getResourceTree(){
-		List<ResourceNodeDTO> nodes = resourceMapper.getAllResource();
+		List<ResourceNodeDTO> nodes = resourceMapper.getAllNodeDTO();
 		return getCascadeTree(nodes);
 	}
 	
@@ -68,10 +67,10 @@ public class ResourceServiceImpl implements ResourceService{
 	}
 
 	@Override
-	public PageDTO<Resource> getAll(PageParam pageParam) throws Exception {
+	public PageDTO<Resource> getAll(Map<String, Object> param) throws Exception {
 		PageDTO<Resource> dto = new PageDTO<>();
-		List<Resource> ResourceList = resourceMapper.getAll(pageParam);
-		int total = resourceMapper.getAllCount();
+		List<Resource> ResourceList = resourceMapper.getAll(param);
+		int total = resourceMapper.getAllCount(param);
 		dto.setRows(ResourceList);
 		dto.setTotal(total);
 		return dto;

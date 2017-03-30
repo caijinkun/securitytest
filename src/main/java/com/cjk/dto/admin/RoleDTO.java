@@ -1,17 +1,14 @@
-package com.cjk.param;
+package com.cjk.dto.admin;
 
-import java.util.Set;
+import java.util.List;
 
-import org.hibernate.validator.constraints.NotBlank;
+import com.cjk.domain.Resource;
 
-public class RoleAddParam {
+public class RoleDTO {
 	private Long roleId;
-	@NotBlank
 	private String roleName;
-	@NotBlank
 	private String description;
-	private Set<Long> resources;
-	
+	private List<Resource> resourceList;
 	
 	public Long getRoleId() {
 		return roleId;
@@ -31,10 +28,10 @@ public class RoleAddParam {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Set<Long> getResources() {
-		return resources;
+	public List<Resource> getResourceList() {
+		return resourceList;
 	}
-	public void setResources(Set<Long> resources) {
-		this.resources = resources;
+	public void setResourceList(List<Resource> resourceList) {
+		this.resourceList = resourceList;
 	}
 }

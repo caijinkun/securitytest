@@ -2,10 +2,17 @@ package com.cjk.param;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+
 public class UserAddParam {
 	private Long userId;
+	@NotBlank
 	private String username;
+	@NotBlank
 	private String password;
+	@NotNull
 	private Integer locked;
 	private Set<Long> roleIds;
 	

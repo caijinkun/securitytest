@@ -1,8 +1,6 @@
 package com.cjk.param;
 
-import com.cjk.param.common.PageParam;
-
-public class ResourceQueryParam extends PageParam{
+public class ResourceQueryParam{
 	private Long pId;
 	public Long getpId() {
 		return pId;

@@ -1,22 +1,13 @@
-package com.cjk.param;
+package com.cjk.dto.admin;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
-
-public class ResourceAddParam {
+public class ResourceDTO {
 	private Long resourceId;
-	@NotBlank
 	private String resourceName;
-	@NotNull
 	private Integer type;
 	private Integer resourceOrder;
-	@NotBlank
 	private String url;
-	@NotNull
 	private Long parentId;
 	private String parentIds;
-	@NotNull
 	private String permision;
 	private String remark;
 	
@@ -37,12 +28,6 @@ public class ResourceAddParam {
 	}
 	public void setType(Integer type) {
 		this.type = type;
-	}
-	public Integer getResourceOrder() {
-		return resourceOrder;
-	}
-	public void setResourceOrder(Integer resourceOrder) {
-		this.resourceOrder = resourceOrder;
 	}
 	public String getUrl() {
 		return url;
@@ -73,5 +58,11 @@ public class ResourceAddParam {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	public Integer getResourceOrder() {
+		return resourceOrder;
+	}
+	public void setResourceOrder(Integer resourceOrder) {
+		this.resourceOrder = resourceOrder;
 	}
 }

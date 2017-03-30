@@ -29,7 +29,7 @@
 		on C.role_id = B.role_id
 	</select>
 	
-	<select id="getAll" parameterType="com.cjk.param.common.PageParam" resultMap="userResultMap">
+	<select id="getAll" parameterType="map" resultMap="userResultMap">
 		select A.user_id, A.username, A.password, A.salt, A.locked, A.expire_at, A.status, C.role_id, C.role_name, C.description from 
 		(
 			select * from t_user_info
@@ -39,10 +39,12 @@
 		on A.user_id = B.user_id
 		left join t_role_info C
 		on C.role_id = B.role_id
-		limit #{offset}, #{limit}
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
 	</select>
 	
-	<select id="getAllCount" resultType="int">
+	<select id="getAllCount" resultType="int" parameterType="map">
 		select count(1) from t_user_info
 	</select>
 	
@@ -76,6 +78,28 @@
 	</update>
 	
 	<insert id="create" parameterType="com.cjk.param.UserAddParam" useGeneratedKeys="true" keyProperty="userId">
-		insert into t_user_info (username, password, locked) values(#{username}, #{password}, #{locked})
+		insert into t_user_info
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	        <if test="username != null" >
+	          username,
+	        </if>
+	        <if test="password != null" >
+	          password,
+	        </if>
+	        <if test="locked != null" >
+	          locked,
+	        </if>
+    	</trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	        <if test="username != null" >
+	          #{username},
+	        </if>
+	        <if test="password != null" >
+	          #{password},
+	        </if>
+	        <if test="locked != null" >
+	          #{locked},
+	        </if>
+    	</trim>
 	</insert>
 </mapper>

@@ -13,10 +13,10 @@ import com.cjk.dao.UserMapper;
 import com.cjk.dao.UserRoleLinkMapper;
 import com.cjk.domain.User;
 import com.cjk.domain.UserRoleLink;
+import com.cjk.dto.admin.UserDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.param.UserAddParam;
 import com.cjk.param.UserAlterParam;
-import com.cjk.param.common.PageParam;
 import com.cjk.service.UserService;
 
 @Service
@@ -34,10 +34,10 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public PageDTO<User> getAll(PageParam pageParam) throws Exception {
-		PageDTO<User> dto = new PageDTO<>();
-		List<User> userList = userMapper.getAll(pageParam);
-		int total = userMapper.getAllCount();
+	public PageDTO<UserDTO> getAll(Map<String, Object> param) throws Exception {
+		PageDTO<UserDTO> dto = new PageDTO<>();
+		List<UserDTO> userList = userMapper.getAll(param);
+		int total = userMapper.getAllCount(param);
 		dto.setRows(userList);
 		dto.setTotal(total);
 		return dto;

@@ -1,6 +1,7 @@
 package com.cjk.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cjk.dao.RoleMapper;
 import com.cjk.dao.RoleResourceLinkMapper;
-import com.cjk.domain.Role;
 import com.cjk.domain.RoleResourceLink;
+import com.cjk.dto.admin.RoleDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.param.RoleAddParam;
 import com.cjk.param.RoleAlterParam;
-import com.cjk.param.common.PageParam;
 import com.cjk.service.RoleService;
 
 @Service
@@ -55,19 +55,17 @@ public class RoleServiceImpl implements RoleService{
 	}
 
 	@Override
-	public PageDTO<Role> getAllByPage(PageParam pageParam) throws Exception {
-		PageDTO<Role> dto = new PageDTO<>();
-		List<Role> roleList = roleMapper.getAllByPage(pageParam);
-		int total = roleMapper.getAllCount();
+	public PageDTO<RoleDTO> getAll(Map<String, Object> param) throws Exception {
+		PageDTO<RoleDTO> dto = new PageDTO<>();
+		List<RoleDTO> roleList = roleMapper.getAll(param);
+		int total = roleMapper.getAllCount(param);
 		dto.setTotal(total);
 		dto.setRows(roleList);
 		return dto;
 	}
-
 	@Override
-	public List<Role> getAll() throws Exception {
-		PageParam pageParam = new PageParam();
-		List<Role> roleList = roleMapper.getAllByPage(pageParam);
-		return roleList;
+	public List<Map<String, Object>> getRoleEnum() throws Exception {
+		return roleMapper.getRoleEnum();
 	}
+
 }

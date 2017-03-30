@@ -10,6 +10,7 @@ public class Resource {
 	private String parentIds;
 	private String permision;
 	private String remark;
+	
 	public Long getResourceId() {
 		return resourceId;
 	}

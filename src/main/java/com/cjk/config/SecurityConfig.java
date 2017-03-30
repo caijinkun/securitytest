@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -47,37 +48,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   		SimpleSecurityInterceptor simpleSecurityInterceptor = new SimpleSecurityInterceptor(
   				simpleAccessDecisionManager, authenticationManager, simpleFilterInvocationSecurityMetadataSource);
   		
-  		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-  		successHandler.setDefaultTargetUrl("/index");
-  		
-  		http
+//  		http
 //  			.addFilterAfter(ssoAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-  			.addFilterBefore(simpleSecurityInterceptor, FilterSecurityInterceptor.class);
+//  			.addFilterBefore(simpleSecurityInterceptor, FilterSecurityInterceptor.class);
   		
   		http
   			.authorizeRequests()  
-          	.antMatchers("/static/**", "/login").permitAll()
-          	.antMatchers("/mytest/test1").hasRole("SUPER")
           	.anyRequest().authenticated()                
   	        .and()
   	        	.csrf().disable()
-  	        	.formLogin()  
-  	        	.loginPage("/login")
-  	        	.usernameParameter("username").passwordParameter("password")
-  	        	.successHandler(successHandler)         
+  	        	.formLogin()
+  	        	.loginProcessingUrl("/doLogin")
+  	        	.loginPage("/loginPage")
+  	        	.usernameParameter("username")
+  	        	.passwordParameter("password")
+  	        	.successForwardUrl("/index")       
   	        .and()  
-  	        	.logout().logoutSuccessUrl("/index")                     
+  	        	.logout()
+  	        	.logoutUrl("/logout")
+  	        	.logoutSuccessUrl("/loginPage")                     
   	        	.invalidateHttpSession(true);  
   	}
   	
   	@Override
   	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-  		auth.authenticationProvider(testAuthenticationProvider());
+//  		auth.authenticationProvider(testAuthenticationProvider());
   		auth.userDetailsService(simpleUserDetailsService()).passwordEncoder(bCryptPasswordEncoder());
   	}
   	
-  	@Bean
-  	public TestAuthenticationProvider testAuthenticationProvider(){
-  		return new TestAuthenticationProvider();
+  	@Override
+  	public void configure(WebSecurity web) throws Exception {
+  		web.debug(true)
+  			.ignoring().antMatchers("/static/**", "/loginPage");
+  		
   	}
+  	
+//  	@Bean
+//  	public TestAuthenticationProvider testAuthenticationProvider(){
+//  		return new TestAuthenticationProvider();
+//  	}
 }

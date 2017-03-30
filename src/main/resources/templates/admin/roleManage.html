@@ -20,7 +20,7 @@
 						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>删除
 					</button>
 				</div>
-				<table id="userTab"></table>
+				<table id="roleTab"></table>
 			</div>
 		</div>
 	</div>
@@ -42,8 +42,8 @@
 							<input type="text" class="form-control" id="addDescription" name="description"/>
 						</div>
 						<div class="form-group">
-							<label for="addResource">资源</label> 
-							<input type="text" id="addResource"/>
+							<label for="addResource">权限</label> 
+							<input type="text" class="form-control" id="addResource"/>
 						</div>
 						<div id="addHidden" class="hidden">
 							<input id="addResourceHidden" name="resources" type="hidden"/>
@@ -74,8 +74,8 @@
 							<input type="text" class="form-control" id="alterDescription" name="description"/>
 						</div>
 						<div class="form-group">
-							<label for="alterResource">资源</label> 
-							<input type="text" id="alterResource"/>
+							<label for="alterResource">权限</label> 
+							<input type="text" class="form-control" id="alterResource"/>
 						</div>
 						<div id="alterHidden" class="hidden">
 							<input id="alterRoleIdHidden" name="roleId" type="hidden"/>
@@ -90,13 +90,13 @@
 			</div>
 		</div>
 	</div>
-	<div id="alterPassModal" class="modal fade">
+	<div id="resourceModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title">权限选择</h4>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body" style="height:600px;overflow-y:auto;">
 					<div>
 					 	<div id="tree"></div>
 					</div>
@@ -113,6 +113,7 @@
 	<script type="text/javascript" th:src="@{/static/component/bootstrap/js/bootstrap.min.js}"></script>
 	<script type="text/javascript" th:src="@{/static/component/bootstrap-table/bootstrap-table.js}"></script>
 	<script type="text/javascript" th:src="@{/static/component/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap-treeview/bootstrap-treeview.min.js}"></script>
 	<script type="text/javascript" th:src="@{/static/component/select2/js/select2.js}"></script>
 	<script type="text/javascript" th:src="@{/static/component/common/bootbox.min.js}"></script>
 	

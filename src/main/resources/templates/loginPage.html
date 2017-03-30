@@ -18,14 +18,14 @@
 						账号登录
 					</div>
 					<div class="panel-body">
-						<form id="loginFrm" style="margin:50px 20%;" method="post" action="/login">	
+						<form id="loginFrm" style="margin:50px 20%;" method="post" action="/doLogin">	
 						    <div class="input-group has-feedback">
 						        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-						        <input type="text" name="username" placeholder="请输入用户名" class="form-control" />
+						        <input type="text" name="username" placeholder="请输入用户名" value="admin" class="form-control" />
 						    </div>
 						    <div class="input-group has-feedback">
 						        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-						        <input type="password" name="password" placeholder="请输入密码" class="form-control" />
+						        <input type="password" name="password" placeholder="请输入密码" value="123456" class="form-control" />
 						    </div>
 						    <div>
 						    	<button type="button" class="btn btn-danger" style="width:100%;" onclick="submit();">登录</button>
