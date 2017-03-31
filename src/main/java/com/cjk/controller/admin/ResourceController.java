@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cjk.domain.Resource;
+import com.cjk.dto.admin.ResourceDTO;
 import com.cjk.dto.admin.ResourceNodeDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.entity.JsonResult;
@@ -37,7 +37,7 @@ public class ResourceController {
 	@RequestMapping("/getAll")
 	public JsonResult getAll(PageParam pageParam, ResourceQueryParam resourceQueryParam) throws Throwable{
 		Map<String, Object> param = BeanUtils.bean2Map(pageParam, resourceQueryParam);
-		PageDTO<Resource> resources = resourceService.getAll(param);
+		PageDTO<ResourceDTO> resources = resourceService.getAll(param);
 		return JsonResult.success().setData(resources);
 	}
 	

@@ -10,6 +10,8 @@ public class Resource {
 	private String parentIds;
 	private String permision;
 	private String remark;
+	private String icon;
+	private Integer nodeType;
 	
 	public Long getResourceId() {
 		return resourceId;
@@ -64,5 +66,17 @@ public class Resource {
 	}
 	public void setResourceOrder(Integer resourceOrder) {
 		this.resourceOrder = resourceOrder;
+	}
+	public String getIcon() {
+		return icon;
+	}
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+	public Integer getNodeType() {
+		return nodeType;
+	}
+	public void setNodeType(Integer nodeType) {
+		this.nodeType = nodeType;
 	}
 }

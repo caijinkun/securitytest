@@ -1,5 +1,7 @@
 package com.cjk.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,12 +11,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cjk.dao.ResourceMapper;
 import com.cjk.dao.UserMapper;
 import com.cjk.dao.UserRoleLinkMapper;
+import com.cjk.domain.Resource;
+import com.cjk.domain.Role;
 import com.cjk.domain.User;
 import com.cjk.domain.UserRoleLink;
+import com.cjk.dto.admin.ResourceDTO;
 import com.cjk.dto.admin.UserDTO;
 import com.cjk.dto.common.PageDTO;
+import com.cjk.entity.Param;
 import com.cjk.param.UserAddParam;
 import com.cjk.param.UserAlterParam;
 import com.cjk.service.UserService;
@@ -25,12 +32,27 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserMapper userMapper;
 	@Autowired
+	private ResourceMapper resourceMapper;
+	
+	@Autowired
 	private UserRoleLinkMapper userRoleLinkMapper;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Override
 	public User getUserByUsername(String username) throws Exception {
-		return userMapper.getByUsername(username);
+		User user = userMapper.getByUsername(username);
+		List<Long> idSet = new ArrayList<>();
+		for(Role role:user.getRoleSet()){
+			idSet.add(role.getRoleId());
+		}
+		Param param = new Param().append("roleIds", idSet);
+		List<ResourceDTO> resources = resourceMapper.getAll(param);
+		Set<String> permisionSet = new LinkedHashSet<>();
+		for(ResourceDTO resource:resources){
+			permisionSet.add(resource.getPermision());
+		}
+		user.setPermisionSet(permisionSet);
+		return user; 
 	}
 
 	@Override

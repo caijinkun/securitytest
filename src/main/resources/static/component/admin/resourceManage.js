@@ -79,6 +79,7 @@ function initTree(){
 	$tree.treeview({
 		data: treeData,
 		levels: 3,
+		showIcon:false,
 		onNodeSelected:function(event, node){
 			console.log(node);
 			$table.bootstrapTable('refresh', {

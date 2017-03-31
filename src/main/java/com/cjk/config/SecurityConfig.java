@@ -48,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   		SimpleSecurityInterceptor simpleSecurityInterceptor = new SimpleSecurityInterceptor(
   				simpleAccessDecisionManager, authenticationManager, simpleFilterInvocationSecurityMetadataSource);
   		
-//  		http
+  		http
 //  			.addFilterAfter(ssoAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//  			.addFilterBefore(simpleSecurityInterceptor, FilterSecurityInterceptor.class);
+  			.addFilterBefore(simpleSecurityInterceptor, FilterSecurityInterceptor.class);
   		
   		http
   			.authorizeRequests()  
@@ -78,9 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   	
   	@Override
   	public void configure(WebSecurity web) throws Exception {
-  		web.debug(true)
+  		web
+//  			.debug(true)
   			.ignoring().antMatchers("/static/**", "/loginPage");
-  		
   	}
   	
 //  	@Bean

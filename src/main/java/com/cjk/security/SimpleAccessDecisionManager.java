@@ -14,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 
-@Service
 public class SimpleAccessDecisionManager implements AccessDecisionManager{
 	@Override
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)

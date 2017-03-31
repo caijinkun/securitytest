@@ -1,15 +1,22 @@
 package com.cjk.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.collections.functors.ConstantTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.AntPathMatcher;
 
+import com.cjk.constant.Constant;
 import com.cjk.dao.ResourceMapper;
 import com.cjk.domain.Resource;
+import com.cjk.domain.User;
+import com.cjk.dto.admin.ResourceDTO;
 import com.cjk.dto.admin.ResourceNodeDTO;
 import com.cjk.dto.common.PageDTO;
 import com.cjk.param.ResourceAddParam;
@@ -25,6 +32,28 @@ public class ResourceServiceImpl implements ResourceService{
 	@Override
 	public List<Map<String, String>> getPerm2RoleList() {
 		return resourceMapper.getPerm2RoleList();
+	}
+	
+	public List<ResourceNodeDTO> getResourceMenu(User user){
+		Set<String> permisionSet = user.getPermisionSet();
+		List<ResourceNodeDTO> targetNodes = new ArrayList<>();
+		AntPathMatcher matcher = new AntPathMatcher();
+		List<ResourceNodeDTO> nodes = resourceMapper.getAllNodeDTO();
+		
+		for(String perm : permisionSet){
+			Iterator<ResourceNodeDTO> nodesIt = nodes.iterator();
+			while(nodesIt.hasNext()){
+				ResourceNodeDTO nodeDTO = nodesIt.next();
+				if (nodeDTO.getType() == Constant.RESOURCE_TYPE_BUTTON || (null != nodeDTO.getNodeType()
+						&& nodeDTO.getNodeType() == Constant.RESOURCE_NODE_TYPE_ROOT)) {
+					nodesIt.remove();				//移除按钮和根节点
+				}else if (matcher.match(perm, nodeDTO.getPermision())) {
+					targetNodes.add(nodeDTO);
+					nodesIt.remove();               //移除已匹配项
+				}
+			}
+		}
+		return getCascadeTree(targetNodes);
 	}
 	
 	@Override
@@ -67,9 +96,9 @@ public class ResourceServiceImpl implements ResourceService{
 	}
 
 	@Override
-	public PageDTO<Resource> getAll(Map<String, Object> param) throws Exception {
-		PageDTO<Resource> dto = new PageDTO<>();
-		List<Resource> ResourceList = resourceMapper.getAll(param);
+	public PageDTO<ResourceDTO> getAll(Map<String, Object> param) throws Exception {
+		PageDTO<ResourceDTO> dto = new PageDTO<>();
+		List<ResourceDTO> ResourceList = resourceMapper.getAll(param);
 		int total = resourceMapper.getAllCount(param);
 		dto.setRows(ResourceList);
 		dto.setTotal(total);
@@ -79,5 +108,10 @@ public class ResourceServiceImpl implements ResourceService{
 	@Override
 	public void update(ResourceAlterParam param) throws Exception {
 		resourceMapper.update(param);
+	}
+	
+	public static void main(String[] args) {
+		AntPathMatcher matcher = new AntPathMatcher();
+		System.out.println(matcher.match("resource:*", "resource:read"));
 	}
 }

@@ -5,28 +5,39 @@
 	
 
 	<select id="getPerm2RoleList" resultType="map">
-		select A.permision, C.role_name as roleName from 
+		select A.permision,C.role_name as roleName from 
 		t_resource_info A
-		left join t_role_resource_link B
+		left join 
+		t_role_resource_link B
 		on A.resource_id = B.resource_id
 		left join t_role_info C
 		on C.role_id = B.role_id
+		where ifnull(A.node_type,0) != 1
 	</select>
 	
-	<select id="getAllNodeDTO" resultType="com.cjk.dto.admin.ResourceNodeDTO">
-		select resource_id as resourceId, resource_name as text, parent_id as parentId,
-			url as url, permision as permision
+	<select id="getAllNodeDTO" parameterType="map" resultType="com.cjk.dto.admin.ResourceNodeDTO">
+		select resource_id as resourceId, resource_name as text, type as type, resource_order as resourceOrder, 
+		parent_id as parentId, url as url, permision as permision, node_type as nodeType, icon as icon
 		from t_resource_info
 	</select>
 	
 	<select id="getAll" resultType="com.cjk.dto.admin.ResourceDTO" parameterType="map">
 		select resource_id as resourceId, resource_name as resourceName, type as type, url as url, 
 		resource_order as resourceOrder, parent_id as parentId, parent_ids as parent_ids, 
-		permision as permision, remark as remark 
+		permision as permision, remark as remark, node_type as roleType, icon as icon
 		from t_resource_info
 		<where>
 			<if test="pId != null">
 				(resource_id = #{pId} or parent_id = #{pId}) 
+			</if>
+			<if test="roleIds != null">
+				resource_id in(
+					select resource_id from t_role_resource_link 
+					where role_id in
+					<foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">  
+			 			#{item}
+					</foreach>
+				)
 			</if>
 		</where>
 		order by resource_order

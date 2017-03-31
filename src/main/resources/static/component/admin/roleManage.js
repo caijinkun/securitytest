@@ -68,7 +68,7 @@ function initModel(){
 
 function initTree(){
 	var $tree = $('#tree');
-	treeData = [];
+	var treeData = [];
 	var $table = $('#resourceTab')
 	$.ajax({
 		url:'/admin/resource/getResourceTree',
@@ -82,7 +82,8 @@ function initTree(){
 		levels: 10,
 		highlightSelected: false,
 		highlightSearchResults: false,
-		showCheckbox: true
+		showCheckbox: true,
+		showIcon:false
 	});
 }
 

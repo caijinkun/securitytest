@@ -13,6 +13,7 @@ public class User implements Serializable{
 	private Long expireAt;
 	private Integer locked;
 	private Set<Role> roleSet;
+	private Set<String> permisionSet;
 	private Integer status;
 	
 	public Long getUserId() {
@@ -63,7 +64,10 @@ public class User implements Serializable{
 	public void setExpireAt(Long expireAt) {
 		this.expireAt = expireAt;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Set<String> getPermisionSet() {
+		return permisionSet;
+	}
+	public void setPermisionSet(Set<String> permisionSet) {
+		this.permisionSet = permisionSet;
 	}
 }
