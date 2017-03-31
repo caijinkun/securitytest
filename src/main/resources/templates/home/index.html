@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/component::commonHead('主页')"></head>
+<body>
+	<div th:include="fragments/layout::nav"></div>
+	<div th:include="fragments/layout::nav-list"></div>
+	
+	
+	<script type="text/javascript" th:src="@{/static/component/common/jquery-1.12.4.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/common/bootbox.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/component/bootstrap-treeview/bootstrap-treeview.min.js}"></script>
+	<script type="text/javascript" th:src="@{/static/common/js/common.js}"></script>
+</body>
+</html>

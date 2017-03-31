@@ -1,22 +1,43 @@
 $(function(){
+	initSel();
 	initModel();
 	initTree();
-	initList($('#roleTab'));
+	initList($('#resourceTab'));
 	initToolbar($('#toolbar'));
 });
+
+function initSel(){
+	var typeData = [ {
+		"id" : "1",
+		"text" : "菜单"
+	}, {
+		"id" : "2",
+		"text" : "按钮"
+	} ];
+	var $addHidden = $('#addHidden');
+	var $alterHidden = $('#alterHidden');
+	
+	$('#addType, #alterType').select2({
+		data:typeData
+	}).on('click', function(){
+		var $this = $(this);
+		var id = $this.prop('id');
+		var data = $this.select2('data');
+		var value = data.id;
+		$('#'+id+"Hidden").val(value);
+	});
+}
 
 function initModel(){
 	var $addModal = $('#addModal');
 	var $alterModal = $('#alterModal');
-	var $resourceModal = $('#resourceModal');
-	var $tree = $('#tree');
 	
 	$addModal.modal({
 		backdrop:false, 
 		show:false
 	}).on('click', 'button[data-custom-commit]', function(){
 		var data = getFormData($('form', $addModal));
-		$.post('/admin/role/create', data)
+		$.post('/admin/resource/create', data)
 			.success(function(){
 				reloadAll();
 				$addModal.modal('hide');
@@ -28,33 +49,11 @@ function initModel(){
 		show:false
 	}).on('click', 'button[data-custom-commit]', function(){
 		var data = getFormData($('form', $alterModal));
-		$.post('/admin/role/update', data)
+		$.post('/admin/resource/update', data)
 			.success(function(){
 				reloadAll();
 				$alterModal.modal('hide');
 			});
-	});
-	
-	$resourceModal.modal({
-		backdrop:true, 
-		show:false
-	}).on('click', 'button[data-custom-commit]', function(){
-		var selArr = $tree.treeview('getChecked');
-		var resourceIdArr = [];
-		var textArr = [];
-		$.each(selArr, function(index, item){
-			resourceIdArr.push(item.resourceId);
-			textArr.push(item.text);
-		});
-		var $active = get$ActiveFiled();
-		$active.$textField.val(textArr.join(','));
-		$active.$hidenFiled.val(resourceIdArr.join(','));
-		
-		$resourceModal.modal('hide');
-		$tree.treeview('uncheckAll');
-	}).on('click', 'button[data-custom-cancel]', function() {
-		$resourceModal.modal('hide');
-		$tree.treeview('uncheckAll');
 	});
 
 	$addModal.add($alterModal).each(function(index, ele) {
@@ -68,7 +67,7 @@ function initModel(){
 
 function initTree(){
 	var $tree = $('#tree');
-	var treeData = [];
+	treeData = [];
 	var $table = $('#resourceTab')
 	$.ajax({
 		url:'/admin/resource/getResourceTree',
@@ -79,12 +78,30 @@ function initTree(){
 	
 	$tree.treeview({
 		data: treeData,
-		levels: 10,
-		highlightSelected: false,
-		highlightSearchResults: false,
-		showCheckbox: true,
-		showIcon:false
+		levels: 3,
+		showIcon:false,
+		onNodeSelected:function(event, node){
+			console.log(node);
+			$table.bootstrapTable('refresh', {
+				query: {
+					pId: node.resourceId
+				}
+			});
+		}
 	});
+}
+
+function reloadTree(){
+	var $tree = $('#tree');
+	var $treeParent = $tree.parent();
+	$tree.remove();
+	$treeParent.append($('<div id="tree"></div>'));
+	initTree();
+}
+
+function reloadAll(){
+	reloadTree();
+	$('#resourceTab').bootstrapTable('refresh');
 }
 
 function initList($tabList){
@@ -97,26 +114,33 @@ function initList($tabList){
 					return index + 1;
 				}
 			},{
-				title : 'roleId',
-				field : 'roleId',
+				title : 'resourceId',
+				field : 'resourceId',
 				visible : false
 			},{
-				field : 'roleName',
-				title : '角色'
+				field : 'resourceName',
+				title : '资源描述'
 			},{
-				field : 'description',
-				title : '角色描述'
-			},{
-				field : 'resourceList',
-				title : '资源',
+				field : 'type',
+				title : '资源类型',
 				formatter : function(value, row, index) {
-					var resourceArr = [];
-					$.each(value, function(index, item){
-						resourceArr.push(item.resourceName);
-					});
-					
-					return resourceArr.join(',');
+					return value == 1?'菜单':'按钮';
 				}
+			},{
+				field : 'url',
+				title : '路径',
+			},{
+				field : 'parentId',
+				title : '父节点'
+			},{
+				field : 'permision',
+				title : '权限表达式'
+			},{
+				field : 'resourceOrder',
+				title : '排序'
+			},{
+				field : 'remark',
+				title : '备注'
 			}
 	];
 
@@ -124,7 +148,7 @@ function initList($tabList){
 	    method: 'get', 
 	    singleSelect:true,
 	    height: 700,
-	    url:'/admin/role/getAll',
+	    url:'/admin/resource/getAll',
 	    uniqueId: 'id',
 	    toolbar: '#toolbar',              
 	    striped: true,
@@ -143,7 +167,7 @@ function initList($tabList){
 }
 
 function initToolbar(){
-	var $table = $('#roleTab');
+	var $table = $('#resourceTab');
 	var $tree = $('#tree');
 
 	var $addModalBut = $('#addModalBut');
@@ -155,6 +179,13 @@ function initToolbar(){
 	var $deleteBut = $('#deleteBut');
 	
 	$addModalBut.on('click', function(){
+		var selArr = $tree.treeview('getSelected');
+		if(!selArr || selArr.length == 0){
+			bootbox.alert('请选择父节点');
+			return;
+		}
+		var sel = selArr[0];
+		$('#addParentIdHidden').val(sel.parentId);
 		$addModal.modal('show');
 	});
 	
@@ -165,20 +196,19 @@ function initToolbar(){
 			return;
 		}
 		var sel = selArr[0];
-		var resourceList = sel.resourceList;
-		var resourceNameArr = [];
-		var resourceIdArr = [];
-		
-		$.each(resourceList, function(index, item){
-			resourceNameArr.push(item.resourceName);
-			resourceIdArr.push(item.resourceId);
+		var selRoleSet = sel.roleSet;
+		var roleIds = $.map(selRoleSet, function(a){
+			return a.roleId;
 		});
 		
-		$('#alterRoleIdHidden').val(sel.roleId);
-		$('#alterRoleName').val(sel.roleName);
-		$('#alterDescription').val(sel.description);
-		$('#alterResource').val(resourceNameArr.join(','));
-		$('#alterResourceHidden').val(resourceIdArr.join(','));
+		$('#alterIdHidden').val(sel.resourceId);
+		$('#alterResourceName').val(sel.resourceName);
+		$('#alterUrl').val(sel.url);
+		$('#alterResourceOrder').val(sel.resourceOrder);
+		$('#alterPermision').val(sel.permision);
+		$('#alterRemark').val(sel.remark);
+		$('#alterType').select2('val', sel.type);
+		$('#alterTypeHidden').val(sel.type);
 		
 		$alterModal.modal('show');
 	});
@@ -186,47 +216,6 @@ function initToolbar(){
 	$deleteBut.on('click', function(){
 	    bootbox.alert('TODO');
 	});
-	
-	var $addResource = $('#addResource');
-	var $alterResource = $('#alterResource');
-	var $resourceModal = $('#resourceModal');
-	
-	$addResource.add($alterResource).on('click', function(){
-		var resources = $.trim($(this).val());
-		var resourceArr = resources.length>0?resources.split(','):[];
-		$.each(resourceArr, function(index, item){
-			var node = $tree.treeview('search', [item, {exactMatch: true}]);
-			$tree.treeview('checkNode', node);
-		});
-		$resourceModal.modal('show');
-	});
-}
-
-function get$ActiveFiled(){
-	var $addModal = $('#addModal');
-	var $alterModal = $('#alterModal');
-	var $activeFieldObj = {
-		$textField :null,
-		$hidenFiled :null
-	};
-	var isAdd = $addModal.hasClass('in');
-	var isAlter = $alterModal.hasClass('in');
-	if((isAdd&&isAlter)||(!isAdd&&!isAlter)){
-		throw new error("新增和修改同时存在或都不存在");
-	}
-	if(isAdd){
-		$activeFieldObj.$textField = $('#addResource');
-		$activeFieldObj.$hidenFiled = $('#addResourceHidden');
-	}else{
-		$activeFieldObj.$textField = $('#alterResource');
-		$activeFieldObj.$hidenFiled = $('#alterResourceHidden');
-	}
-	return $activeFieldObj;
-	
-}
-
-function reloadAll(){
-	$('#roleTab').bootstrapTable('refresh');
 }
 
 function clean($container){

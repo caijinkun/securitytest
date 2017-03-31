@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   		
   		SimpleSecurityInterceptor simpleSecurityInterceptor = new SimpleSecurityInterceptor(
   				simpleAccessDecisionManager, authenticationManager, simpleFilterInvocationSecurityMetadataSource);
+  		SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+  		successHandler.setDefaultTargetUrl("/home/index");
   		
   		http
 //  			.addFilterAfter(ssoAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -59,14 +61,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   	        	.csrf().disable()
   	        	.formLogin()
   	        	.loginProcessingUrl("/doLogin")
-  	        	.loginPage("/loginPage")
+  	        	.loginPage("/home/loginPage")
   	        	.usernameParameter("username")
   	        	.passwordParameter("password")
-  	        	.successForwardUrl("/index")       
+  	        	.successHandler(successHandler)
   	        .and()  
   	        	.logout()
   	        	.logoutUrl("/logout")
-  	        	.logoutSuccessUrl("/loginPage")                     
+  	        	.logoutSuccessUrl("/home/loginPage")                     
   	        	.invalidateHttpSession(true);  
   	}
   	
@@ -80,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
   	public void configure(WebSecurity web) throws Exception {
   		web
 //  			.debug(true)
-  			.ignoring().antMatchers("/static/**", "/loginPage");
+  			.ignoring().antMatchers("/static/**", "/home/loginPage");
   	}
   	
 //  	@Bean
